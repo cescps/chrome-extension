@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 320px;
+      padding: 18px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+    }
+
+    h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #00b4d8;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #8b949e;
+      margin-bottom: 5px;
+      margin-top: 10px;
+    }
+
+    input[type="password"],
+    input[type="text"],
+    input[type="number"],
+    input[type="range"] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #30363d;
+      background: #161b22;
+      color: #c9d1d9;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus { border-color: #00b4d8; }
+
+    input[type="range"] {
+      padding: 0;
+      background: transparent;
+      border: none;
+      margin-top: 4px;
+      accent-color: #00b4d8;
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .range-row input[type="range"] { flex: 1; }
+
+    .range-val {
+      font-size: 12px;
+      font-weight: 600;
+      color: #c9d1d9;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .row {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    button {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    #saveBtn {
+      background: #21262d;
+      color: #8b949e;
+      border: 1px solid #30363d;
+    }
+    #saveBtn:hover { background: #30363d; }
+
+    #toggleBtn {
+      background: #21262d;
+      color: #8b949e;
+      border: 1px solid #30363d;
+      flex: 0 0 60px;
+    }
+    #toggleBtn:hover { background: #30363d; }
+
+    #startBtn {
+      background: #238636;
+      color: #fff;
+    }
+    #startBtn:hover { background: #2ea043; }
+    #startBtn.running {
+      background: #b62324;
+    }
+    #startBtn.running:hover { background: #da3633; }
+
+    .status {
+      margin-top: 10px;
+      font-size: 12px;
+      text-align: center;
+      min-height: 16px;
+      color: #56d364;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #21262d;
+      margin: 14px 0;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #8b949e;
+      margin-top: 6px;
+    }
+
+    .stat-val {
+      color: #c9d1d9;
+      font-weight: 600;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #8b949e;
+      line-height: 1.7;
+      margin-top: 4px;
+    }
+
+    .setting-group {
+      margin-top: 6px;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .setting-row label {
+      margin: 0;
+      flex: 1;
+    }
+
+    .setting-row input[type="number"] {
+      width: 70px;
+      text-align: center;
+      flex: 0 0 70px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Auto Rewriter</h2>
+
+  <label>DeepSeek API Key</label>
+  <div class="row">
+    <input type="password" id="apiKey" placeholder="sk-...">
+    <button id="toggleBtn">Show</button>
+  </div>
+
+  <hr class="divider">
+
+  <h3>Delays (seconds)</h3>
+  <div class="setting-group">
+    <div class="setting-row">
+      <label>Between scans</label>
+      <input type="number" id="delayScan" min="1" max="60" step="0.5" value="2">
+    </div>
+    <div class="setting-row">
+      <label>After opening composer</label>
+      <input type="number" id="delayCompose" min="0.2" max="10" step="0.1" value="0.4">
+    </div>
+    <div class="setting-row">
+      <label>After posting</label>
+      <input type="number" id="delayPost" min="0.5" max="30" step="0.5" value="1">
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h3>Similarity filter</h3>
+  <label>Threshold</label>
+  <div class="range-row">
+    <input type="range" id="similarity" min="0.3" max="1" step="0.05" value="0.65">
+    <span class="range-val" id="similarityVal">65%</span>
+  </div>
+  <div class="hint">Higher = stricter (more posts skipped as duplicates)</div>
+
+  <hr class="divider">
+
+  <div class="row">
+    <button id="saveBtn">Save settings</button>
+  </div>
+
+  <button id="startBtn" style="margin-top:10px;width:100%">Start Auto</button>
+
+  <div class="status" id="status"></div>
+
+  <div class="stat-row">
+    <span>Posts published</span>
+    <span class="stat-val" id="postsCount">0</span>
+  </div>
+  <div class="stat-row">
+    <span>State</span>
+    <span class="stat-val" id="stateLabel">Idle</span>
+  </div>
+  <div class="stat-row">
+    <span>Saved originals</span>
+    <span class="stat-val" id="poolCount">0</span>
+  </div>
+
+  <hr class="divider">
+
+  <button id="clearPoolBtn" style="width:100%;background:#21262d;color:#8b949e;border:1px solid #30363d;font-size:11px;padding:6px">Clear history</button>
+
+  <hr class="divider">
+
+  <div class="hint">
+    Keep x.com open in a tab.<br>
+    Auto mode scans your feed, rewrites new posts via DeepSeek, and publishes them continuously.
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
