@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "DeepSeek Auto Rewriter",
+  "version": "1.0",
+  "description": "Autonomously picks posts, rewrites via DeepSeek, and posts on X",
+  "permissions": ["storage", "clipboardWrite", "alarms", "scripting", "tabs"],
+  "host_permissions": [
+    "https://x.com/*",
+    "https://pro.x.com/*",
+    "https://twitter.com/*",
+    "https://api.deepseek.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*", "https://pro.x.com/*", "https://twitter.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
